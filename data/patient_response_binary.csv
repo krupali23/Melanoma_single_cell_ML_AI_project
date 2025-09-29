@@ -1,0 +1,66 @@
+patient_id,response_label,response_binary,source_file,source_sheet
+P1,R ,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P2,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P3,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P4,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P5,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P6,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P7,R ,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P8,R,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P10,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P11,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P12,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P13,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P14,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P15,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P16,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P17,R,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P18,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P19,R,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P20,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P21,R,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P22,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P23,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P24,R,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P25,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P26,R ,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P27,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P28,R,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P29,R ,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P30,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P31,NR,0,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P33,R ,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P35,R,1,1-s2.0-S0092867418313941-mmc1.xlsx,Lesion-scRNAseq data
+P36,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P37,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P38,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P39,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P40,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P41,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P42,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P43,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P44,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P45,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P46,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P47,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P49,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P50,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P51,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P52,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P53,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P54,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P55,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P56,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P57,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P58,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P59,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P60,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P61,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P62,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P63,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P64,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P65,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P66,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P67,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P68,NR,0,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
+P69,R ,1,1-s2.0-S0092867418313941-mmc3.xlsx,Lesion-Fig3
