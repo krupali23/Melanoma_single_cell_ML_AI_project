@@ -8,7 +8,7 @@ pyarrow>=16
 openpyxl>=3.1
 matplotlib>=3.8
 # add if you used them:
-# shap>=0.45
-# xgboost>=2.0
+shap>=0.45
+xgboost>=2.0
 # lightgbm>=4.3
 
