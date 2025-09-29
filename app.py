@@ -25,9 +25,14 @@ DATA_DIR = (
     os.environ.get("DATA_DIR")
     or st.secrets.get("DATA_DIR", os.path.join(REPO_ROOT, "data"))
 )
+
+# prefer data/models if it exists, else top-level models
+models_in_data = os.path.join(DATA_DIR, "models")
+fallback_models = os.path.join(REPO_ROOT, "models")
+MODELS_DIR_DEFAULT = models_in_data if os.path.isdir(models_in_data) else fallback_models
 MODELS_DIR = (
     os.environ.get("MODELS_DIR")
-    or st.secrets.get("MODELS_DIR", os.path.join(REPO_ROOT, "models"))
+    or st.secrets.get("MODELS_DIR", MODELS_DIR_DEFAULT)
 )
 
 SC_ANNOT = os.path.join(DATA_DIR, "sc_annot.csv")          # << only this is used for UMAP + metadata
@@ -978,4 +983,5 @@ def build_report_html():
 
 st.download_button("Download HTML report", data=build_report_html(),
                    file_name="immunotherapy_report.html", mime="text/html")
+
 
