@@ -20,8 +20,15 @@ from sklearn.metrics import (
 st.set_page_config(page_title="Immunotherapy Response", layout="wide")
 
 # ---- constants / paths
-DATA_DIR   = os.environ.get("DATA_DIR", r"C:\Users\krupa\Desktop\Bootcamp\Final_project\Data")
-MODELS_DIR = os.path.join(os.path.dirname(DATA_DIR), "models")
+REPO_ROOT = os.path.dirname(__file__)
+DATA_DIR = (
+    os.environ.get("DATA_DIR")
+    or st.secrets.get("DATA_DIR", os.path.join(REPO_ROOT, "data"))
+)
+MODELS_DIR = (
+    os.environ.get("MODELS_DIR")
+    or st.secrets.get("MODELS_DIR", os.path.join(REPO_ROOT, "models"))
+)
 
 SC_ANNOT = os.path.join(DATA_DIR, "sc_annot.csv")          # << only this is used for UMAP + metadata
 SC_EXPR_PARQUET = os.path.join(DATA_DIR, "sc_expr.parquet")
@@ -971,3 +978,4 @@ def build_report_html():
 
 st.download_button("Download HTML report", data=build_report_html(),
                    file_name="immunotherapy_report.html", mime="text/html")
+
