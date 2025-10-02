@@ -588,7 +588,8 @@ elif page == "Gene Explorer":
 
         cluster_pick = st.selectbox("Cluster", clusters_for_picker, index=0)
         cluster_genes_raw = CLUSTER2MARKERS.get(cluster_pick, [])
-        cluster_genes_present = [g for g in cluster_genes_raw if g in ALL_GENES]
+        # ✅ case-insensitive mapping to real column names in sc_expr.*
+        cluster_genes_present = map_to_available_genes(cluster_genes_raw)
 
         st.caption(
             f"Found **{len(cluster_genes_raw)}** markers in files · "
@@ -946,3 +947,4 @@ if st.sidebar.button("🧹 Clear app cache"):
     st.cache_data.clear()
     st.cache_resource.clear()
     st.rerun()
+
