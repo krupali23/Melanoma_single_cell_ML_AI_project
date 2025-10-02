@@ -457,17 +457,17 @@ if page == "Performance":
                 figROC = go.Figure(); figROC.add_trace(go.Scatter(x=fpr, y=tpr, mode="lines", name="ROC"))
                 figROC.add_trace(go.Scatter(x=[0,1], y=[0,1], mode="lines", line=dict(dash="dash"), name="chance"))
                 figROC.update_layout(title=f"ROC (AUC={auc(fpr,tpr):.3f})", xaxis_title="FPR", yaxis_title="TPR", height=400)
-                st.plotly_chart(figROC, width="stretch")
+                st.plotly_chart(figROC, use_container_width=True)
 
                 figPR  = go.Figure(); figPR.add_trace(go.Scatter(x=rec, y=prec, mode="lines", name="PR"))
                 figPR.update_layout(title="Precision–Recall", xaxis_title="Recall", yaxis_title="Precision", height=400)
-                st.plotly_chart(figPR,  width="stretch")
+                st.plotly_chart(figPR,  use_container_width=True)
 
                 cm2 = confusion_matrix(y_true, y_pred, labels=[0,1])
                 figCM = px.imshow(cm2, text_auto=True, color_continuous_scale="Blues",
                                   labels=dict(x="Predicted", y="True", color="Count"),
                                   x=["0 (NR)","1 (R)"], y=["0 (NR)","1 (R)"], title="Confusion Matrix")
-                st.plotly_chart(figCM, width="stretch")
+                st.plotly_chart(figCM, use_container_width=True)
 
             with st.expander("Classification report (text)"):
                 st.text(classification_report(y_true, y_pred, target_names=["0 (NR)", "1 (R)"], digits=3))
@@ -505,7 +505,7 @@ if page == "Performance":
                     figCMu = px.imshow(confusion_matrix(y, p, labels=[0,1]), text_auto=True, color_continuous_scale="Greens",
                                     labels=dict(x="Predicted", y="True", color="Count"),
                                     x=["0 (NR)","1 (R)"], y=["0 (NR)","1 (R)"], title="Confusion Matrix (uploaded)")
-                    st.plotly_chart(figCMu, width="stretch")
+                    st.plotly_chart(figCMu, use_container_width=True)
             else:
                 st.info("Uploaded file had no matching indices for labels.")
         else:
@@ -520,7 +520,7 @@ if page == "Performance":
     st.dataframe(
         tbl[["patient_id","traffic","probability","prediction"]]
             .style.format({"probability":"{:.3f}"}),
-        width="stretch"
+        use_container_width=True
     )
     st.download_button("Download predictions (CSV)", data=out_all.to_csv().encode("utf-8"),
                        file_name="predictions.csv", mime="text/csv")
@@ -568,7 +568,7 @@ elif page == "Cell Map":
         except Exception:
             pass
         fig.update_layout(legend_title_text="")
-        st.plotly_chart(fig, width="stretch")
+        st.plotly_chart(fig, use_container_width=True)
 
     render_page_chat("Cell Map")
 
@@ -636,22 +636,22 @@ elif page == "Gene Explorer":
         with tabV:
             figv = px.violin(df, x=lab, y=g1, color=lab, box=True, points="all", height=440, color_discrete_map=colmap)
             figv.update_layout(xaxis_title="", yaxis_title=g1, legend_title_text="")
-            st.plotly_chart(figv, width="stretch")
+            st.plotly_chart(figv, use_container_width=True)
         with tabB:
             figb = px.box(df, x=lab, y=g1, color=lab, points="all", height=440, color_discrete_map=colmap)
             figb.update_layout(xaxis_title="", yaxis_title=g1, legend_title_text="")
-            st.plotly_chart(figb, width="stretch")
+            st.plotly_chart(figb, use_container_width=True)
 
     with st.expander("🧩 Expression by cell type / cluster (Violin + Means)", expanded=False):
         cluster_col = "cluster_label"
         figct = px.violin(df, x=cluster_col, y=g1, color=cluster_col, box=True, height=520)
         figct.update_layout(xaxis_title="", yaxis_title=g1, legend_title_text="")
-        st.plotly_chart(figct, width="stretch")
+        st.plotly_chart(figct, use_container_width=True)
 
         means = df.groupby(cluster_col)[g1].mean().sort_values(ascending=False)
         st.dataframe(means.to_frame(f"{g1} mean"), use_container_width=True)
         figbar = px.bar(means, title=f"{g1} mean by cluster", height=420)
-        st.plotly_chart(figbar, width="stretch")
+        st.plotly_chart(figbar, use_container_width=True)
 
     with st.expander("🔥 Heatmap — group mean expression for selected markers", expanded=False):
         if panel_genes:
@@ -663,7 +663,7 @@ elif page == "Gene Explorer":
                 mat = dfH.groupby(grp_lab)[panel_genes].mean().sort_index()
                 figH = px.imshow(mat, color_continuous_scale="RdBu_r", aspect="auto", height=420)
                 figH.update_layout(xaxis_title="Gene", yaxis_title="Group", legend_title_text="")
-                st.plotly_chart(figH, width="stretch")
+                st.plotly_chart(figH, use_container_width=True)
             else:
                 st.info("Selected heatmap genes were not found in the expression matrix.")
         else:
@@ -681,7 +681,7 @@ elif page == "Gene Explorer":
             figU = px.scatter(dfU, x="umap1", y="umap2", color=gene_for_umap,
                               color_continuous_scale="RdBu_r", render_mode="webgl", height=650)
             figU.update_layout(legend_title_text="")
-            st.plotly_chart(figU, width="stretch")
+            st.plotly_chart(figU, use_container_width=True)
         else:
             st.info("Could not read expression for this gene.")
 
@@ -690,7 +690,7 @@ elif page == "Gene Explorer":
             fig2 = px.scatter(df, x=g1, y=g2, color=lab, trendline="ols", height=450,
                               color_discrete_map=colmap)
             fig2.update_layout(xaxis_title=g1, yaxis_title=g2, legend_title_text="")
-            st.plotly_chart(fig2, width="stretch")
+            st.plotly_chart(fig2, use_container_width=True)
         else:
             st.caption("Pick a second gene above to enable co-expression.")
 
@@ -722,9 +722,9 @@ elif page == "Comparison":
             figC.add_trace(go.Bar(name="Patient − Mean(R)", x=top.index, y=top["delta_R"]))
             figC.add_trace(go.Bar(name="Patient − Mean(NR)", x=top.index, y=top["delta_N"]))
             figC.update_layout(barmode="group", xaxis_title="Feature", yaxis_title="Difference", height=450)
-            st.plotly_chart(figC, width="stretch")
+            st.plotly_chart(figC, use_container_width=True)
             with st.expander("Raw table"):
-                st.dataframe(top, width="stretch")
+                st.dataframe(top, use_container_width=True)
         else:
             st.info("Labels not available; group averages require response labels.")
 
@@ -747,13 +747,13 @@ elif page == "Explainability":
             shap_df=pd.DataFrame(np.abs(sv.values).mean(axis=0), index=feat_names, columns=["mean|SHAP|"]).sort_values("mean|SHAP|", ascending=False)
             topk=st.slider("Top K",5,min(30,len(shap_df)),10)
             figImp=px.bar(shap_df.head(topk), height=420)
-            st.plotly_chart(figImp, width="stretch")
+            st.plotly_chart(figImp, use_container_width=True)
         except Exception:
             fi = fi or correlation_importance(model, X_all, feat_names)
             if fi is not None:
                 topk=st.slider("Top features",5,min(30,len(fi)),10)
                 figImp=px.bar(fi.head(topk), height=420)
-                st.plotly_chart(figImp, width="stretch")
+                st.plotly_chart(figImp, use_container_width=True)
             else:
                 st.info("No importances available.")
     else:
@@ -761,7 +761,7 @@ elif page == "Explainability":
         if fi is not None:
             topk=st.slider("Top features",5,min(30,len(fi)),10)
             figImp=px.bar(fi.head(topk), height=420)
-            st.plotly_chart(figImp, width="stretch")
+            st.plotly_chart(figImp, use_container_width=True)
         else:
             st.info("No importances available.")
 
@@ -788,7 +788,7 @@ elif page == "Chat":
                 ans = "Single-cell table not loaded."
             else:
                 names = sc_df["cluster_label"].astype(str).unique().tolist()
-                st.dataframe(pd.Series(names, name="clusters"), width="stretch")
+                st.dataframe(pd.Series(names, name="clusters"), use_container_width=True)
                 ans = f"I listed {len(names)} cluster names above."
         elif "average expression of gene" in ql:
             m = re.search(r"average expression of gene ([a-z0-9\-_\.]+)", ql)
@@ -800,7 +800,7 @@ elif page == "Chat":
                         df = sc_df.merge(expr, on="cell_id", how="left")
                         df = attach_response(df, labels_df)
                         grp = df.groupby(df["response"].map({1:"Responders",0:"Non-responders"}).fillna("Unknown"))[g].mean()
-                        st.bar_chart(grp, width="stretch")
+                        st.bar_chart(grp, use_container_width=True)
                         ans = f"Plotted average {g} by response group."
                 else:
                     ans = "That gene is not in the expression matrix."
@@ -810,8 +810,8 @@ elif page == "Chat":
             fi = feature_importance_series(model, feat_names) or correlation_importance(model, X_all, feat_names)
             if fi is not None:
                 top = fi.head(12)
-                st.dataframe(top.to_frame("importance"), width="stretch")
-                st.plotly_chart(px.bar(top.sort_values(), orientation="h"), width="stretch")
+                st.dataframe(top.to_frame("importance"), use_container_width=True)
+                st.plotly_chart(px.bar(top.sort_values(), orientation="h"), use_container_width=True)
                 ans = "Top features shown above."
             else:
                 ans = "No importances available."
