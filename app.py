@@ -38,7 +38,7 @@ SC_EXPR_CSV     = os.path.join(DATA_DIR, "sc_expr.csv")
 
 # Marker lists
 MARKERS_DIR         = os.path.join(DATA_DIR, "markers")
-MARKERS_TOP50_DIR   = os.path.join(MARKERS_DIR, "per_group_top50")  # << your folder
+MARKERS_TOP50_DIR   = os.path.join(MARKERS_DIR, "per_group_top50")
 
 # ================== HERO + TOP NAV ==================
 st.markdown(
@@ -133,7 +133,6 @@ def load_labels():
                 m={"responder":1,"r":1,"cr":1,"pr":1,"non-responder":0,"nr":0,"sd":0,"pd":0}
                 out["response"]=out["response"].astype(str).str.strip().str.lower().map(m)
             out=out.dropna(subset=["patient_id","response"]).copy()
-            # safe strip for patient_id
             out["patient_id"]=out["patient_id"].astype(str).str.strip()
             out["response"]=out["response"].astype(int)
             return out.groupby("patient_id")["response"].max().to_frame()
@@ -174,7 +173,7 @@ def feature_importance_series(est, feat_names):
 
 def correlation_importance(model, X, feat_names):
     try:
-        s=probas(model,X[feat_names]);
+        s=probas(model,X[feat_names])
         return pd.Series({f:(np.corrcoef(X[f].values,s)[0,1] if X[f].std()>0 else 0) for f in feat_names}).abs().sort_values(ascending=False)
     except Exception:
         return None
@@ -210,26 +209,40 @@ def load_sc_annot(path_csv: str):
 
 sc_df = load_sc_annot(SC_ANNOT)
 
-# ---- expression helper
+# ---- expression helpers (ROBUST parquet reading + case-insensitive mapping)
+def _cols_from_parquet(path: str):
+    # Try pyarrow schema (fast, no full read)
+    try:
+        import pyarrow.parquet as pq
+        return [c for c in pq.ParquetFile(path).schema.names if c != "cell_id"]
+    except Exception:
+        pass
+    # Try pandas with any engine
+    for eng in [None, "pyarrow", "fastparquet"]:
+        try:
+            df_cols = pd.read_parquet(path, engine=eng, columns=None).columns.tolist()
+            return [c for c in df_cols if c != "cell_id"]
+        except Exception:
+            continue
+    return None
+
 @st.cache_data(show_spinner=False)
 def available_gene_list():
     if os.path.exists(SC_EXPR_PARQUET):
-        try:
-            import pyarrow.parquet as pq
-            return [c for c in pq.ParquetFile(SC_EXPR_PARQUET).schema.names if c!="cell_id"]
-        except Exception:
-            try:
-                return [c for c in pd.read_parquet(SC_EXPR_PARQUET, engine="pyarrow").columns if c!="cell_id"]
-            except Exception:
-                pass
+        cols = _cols_from_parquet(SC_EXPR_PARQUET)
+        if cols:
+            return cols
     if os.path.exists(SC_EXPR_CSV):
-        with open(SC_EXPR_CSV,"r",encoding="utf-8") as f:
-            header=f.readline().strip().split(",")
-        return [h for h in header if h!="cell_id"]
+        try:
+            with open(SC_EXPR_CSV,"r",encoding="utf-8") as f:
+                header=f.readline().strip().split(",")
+            return [h for h in header if h!="cell_id"]
+        except Exception:
+            pass
     return []
 
 ALL_GENES = available_gene_list()
-ALL_GENES_LUT = {g.lower(): g for g in ALL_GENES}  # case-insensitive mapper
+ALL_GENES_LUT = {str(g).strip().lower(): g for g in ALL_GENES}  # case-insensitive mapper
 
 def map_to_available_genes(markers: list[str]) -> list[str]:
     mapped = []
@@ -243,8 +256,12 @@ def read_gene_cols(genes):
     genes = map_to_available_genes(genes)
     if not genes: return None
     if os.path.exists(SC_EXPR_PARQUET):
-        try: return pd.read_parquet(SC_EXPR_PARQUET, columns=["cell_id"]+genes)
-        except Exception: pass
+        # Try any engine; ask pandas to handle it
+        for eng in [None, "pyarrow", "fastparquet"]:
+            try:
+                return pd.read_parquet(SC_EXPR_PARQUET, engine=eng, columns=["cell_id"]+genes)
+            except Exception:
+                continue
     if os.path.exists(SC_EXPR_CSV):
         try: return pd.read_csv(SC_EXPR_CSV, usecols=["cell_id"]+genes)
         except Exception: pass
@@ -331,7 +348,7 @@ def attach_response(df: pd.DataFrame, labels_df: pd.DataFrame | None) -> pd.Data
     m = labels_df.reset_index().rename(columns={"index":"patient_id"})
     return df.merge(m, on="patient_id", how="left")
 
-# ================== KNOWLEDGE-BASE ANSWERS (NEW) ==================
+# ================== KNOWLEDGE-BASE ANSWERS ==================
 def kb_answer(question: str, page: str | None = None) -> str:
     q = (question or "").strip().lower()
 
@@ -408,7 +425,7 @@ def kb_answer(question: str, page: str | None = None) -> str:
     return ("Ask about metrics (F1, sensitivity, specificity, ROC/PR), clusters, responder status, gene expression, "
             "or what each section on this page means.")
 
-# ----- tiny chat helper shown at bottom of every page (UPDATED) -----
+# ----- tiny chat helper shown at bottom of every page -----
 def render_page_chat(page_name: str):
     st.markdown("---")
     with st.expander("💬 Help on this page"):
@@ -588,7 +605,7 @@ elif page == "Gene Explorer":
 
         cluster_pick = st.selectbox("Cluster", clusters_for_picker, index=0)
         cluster_genes_raw = CLUSTER2MARKERS.get(cluster_pick, [])
-        # ✅ case-insensitive mapping to real column names in sc_expr.*
+        # Case-insensitive mapping to present genes
         cluster_genes_present = map_to_available_genes(cluster_genes_raw)
 
         st.caption(
@@ -688,10 +705,19 @@ elif page == "Gene Explorer":
 
     with st.expander("🔗 Co-expression (scatter)", expanded=False):
         if g2 != "(none)" and (g2 in df.columns):
-            fig2 = px.scatter(df, x=g1, y=g2, color=lab, trendline="ols", height=450,
+            # Add trendline only if statsmodels is available
+            trend = None
+            try:
+                import statsmodels.api as sm  # noqa: F401
+                trend = "ols"
+            except Exception:
+                trend = None
+            fig2 = px.scatter(df, x=g1, y=g2, color=lab, trendline=trend, height=450,
                               color_discrete_map=colmap)
             fig2.update_layout(xaxis_title=g1, yaxis_title=g2, legend_title_text="")
             st.plotly_chart(fig2, use_container_width=True)
+            if trend is None:
+                st.caption("Trendline requires `statsmodels`; showing scatter without OLS line.")
         else:
             st.caption("Pick a second gene above to enable co-expression.")
 
@@ -768,7 +794,7 @@ elif page == "Explainability":
 
     render_page_chat("Explainability")
 
-# ================== PAGE: CHAT (UPDATED) ==================
+# ================== PAGE: CHAT ==================
 elif page == "Chat":
     st.markdown("<h2 style='display:flex;align-items:center;gap:8px'>💬 <span>How can I help?</span></h2>", unsafe_allow_html=True)
 
@@ -783,7 +809,6 @@ elif page == "Chat":
 
         def has(*kw): return any(k in ql for k in kw)
 
-        # keep your functional intents
         if has("cluster names","cell types","list clusters"):
             if sc_df is None:
                 ans = "Single-cell table not loaded."
@@ -821,7 +846,6 @@ elif page == "Chat":
         elif has("how many patients","number of patients"):
             ans = f"There are **{X_all.shape[0]}** patients with features."
 
-        # fallback to knowledge base
         if ans is None:
             ans = kb_answer(q, page="Chat")
 
@@ -947,4 +971,3 @@ if st.sidebar.button("🧹 Clear app cache"):
     st.cache_data.clear()
     st.cache_resource.clear()
     st.rerun()
-
